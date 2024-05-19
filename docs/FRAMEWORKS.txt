@@ -1,3 +1,4 @@
 django - https://www.djangoproject.com/
 djangorest - https://www.django-rest-framework.org/
+requests - https://pypi.org/project/requests/
 
