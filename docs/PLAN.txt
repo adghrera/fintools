@@ -1,0 +1,47 @@
+- Financial data
+
+https://site.financialmodelingprep.com/developer/docs/pricing
+
+https://alpaca.markets/sdks/python/trading.html
+
+tickers data
+
+
+- tickers API
+- stock tickers, download daily
+https://www.sec.gov/files/company_tickers.json
+
+
+- Stooq data - uploader
+https://stooq.com/db/h/
+
+
+- 50 stocks
+
+- Past performance (-10 to 10)
+- Signal (-10 to 10)
+
+- Place order
+
+- buy on buy signal
+- sell on sell signal
+
+audit
+type, what, when, why, who
+
+stocks
+prices
+
+groups
+group_stocks
+
+strategy - id, name, desc
+strategy_steps - algorithm, parameters
+
+signals - strategy, ticker, date, signal
+
+orders - signal id, order id, account, type, ticker, quantity, price, limit, status, timestamp
+trades - order id, account, trade type, count, amount
+
+account
+txns - account id, type, order id, trade id

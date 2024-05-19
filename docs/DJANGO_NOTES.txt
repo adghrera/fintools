@@ -1,0 +1,44 @@
+postgres config
+
+C:\Users\adghr\AppData\Roaming\postgresql\.pg_service.conf
+https://www.postgresql.org/docs/14/libpq-pgservice.html
+
+[my_service]
+host=localhost
+user=USER
+dbname=NAME
+port=5432
+
+
+traderbot\.my_pgpass
+
+
+
+commands
+=======
+
+python manage.py runserver
+
+python manage.py startapp polls
+
+python manage.py migrate
+
+python manage.py makemigrations polls
+
+# show sql
+
+python manage.py sqlmigrate polls 0001
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+
+# test shell api
+
+python manage.py shell
+
+
+python manage.py createsuperuser
+
+admin/admin123
