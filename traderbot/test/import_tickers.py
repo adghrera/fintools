@@ -1,21 +1,30 @@
-import sys
-import os
-import django
+import test_setup
+from django.db import IntegrityError, transaction
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "traderbot.settings")
-django.setup()
+from stockutils.tickers.stocktickers import DefaultStockTickerProvider
+from stockdata.models import Ticker
 
 
-def import_tickers():
+def import_all_tickers():
+    tickers = DefaultStockTickerProvider().get_tickers()
+    rows = []
+    for name, data in tickers.items():
+        ticker = Ticker()
+        ticker.id = data["ticker"]
+        ticker.name = data["title"]
+        rows.append(ticker)
+    # print(rows)
 
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "traderbot.traderbot.settings")
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "traderbot.settings")
-    # django.setup()
+    with transaction.atomic():
+        Ticker.objects.bulk_create(rows, ignore_conflicts=True)
 
-    # from traderbot.traderbot.settings import INSTALLED_APPS
-    # from traderbot.stockdata.models import Ticker
+        # Ticker.objects.bulk_create(rows)
+        # for row in rows:
+        #     row.save()
+    # print(tickers)
+
+
+def demo_tickers():
     from stockdata.models import Ticker
 
     ticker = Ticker()
@@ -23,16 +32,13 @@ def import_tickers():
     ticker.name = "Apple"
     ticker.sector = "Technology"
     ticker.exchange = "NASDAQ"
-    result = ticker.save()
-    print(result)
+    ticker.save()
+
+    ticker = Ticker()
+    ticker.id = "PYPL"
+    ticker.name = "Paypal"
+    ticker.save()
 
 
 if __name__ == "__main__":
-    # import shell from manage
-
-    # SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-    # sys.path.append(os.path.dirname(SCRIPT_DIR))
-    # print(sys.path)
-
-    import_tickers()
+    import_all_tickers()

@@ -4,11 +4,12 @@ import time
 
 import requests
 
-from traderbot.stockutils.appexceptions import AppError
-from traderbot.stockutils.config import ConfigManager, TICKERS, RAW_TICKERS
+from stockutils.appexceptions import AppError
+from stockutils.config import ConfigManager, TICKERS, RAW_TICKERS
 
-REFRESH_INTERVAL = 24*60*60
-TICKERS_URL = 'https://www.sec.gov/files/company_tickers.json'
+REFRESH_INTERVAL = 24 * 60 * 60
+TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
+
 
 class StockTickerProvider:
 
@@ -32,7 +33,6 @@ class DefaultStockTickerProvider(StockTickerProvider):
     def get_ticker(self, ticker: str) -> dict:
         return self.get_tickers().get(ticker)
 
-
     def get_tickers(self):
         now = int(time.time())
         if not self.tickers or self.last_updated < now - REFRESH_INTERVAL:
@@ -45,13 +45,14 @@ class DefaultStockTickerProvider(StockTickerProvider):
 
             result = {}
             for id, tick in t.items():
-                result[tick['ticker']] = tick
+                result[tick["ticker"]] = tick
 
             return result
+
     def fetch_external_tickers_dynamic(self):
         now = int(time.time())
         cm = ConfigManager()
-        updated = cm.get_config('tickers.updated', 0)
+        updated = cm.get_config("tickers.updated", 0)
 
         result = None
         if updated < now - REFRESH_INTERVAL:
@@ -59,26 +60,27 @@ class DefaultStockTickerProvider(StockTickerProvider):
 
             if r.status_code != 200:
                 print(r)
-                raise AppError('Error getting tickers')
+                raise AppError("Error getting tickers")
 
             data = r.json()
             result = {}
 
             for id, tick in data.items():
-                result[tick['ticker']] = tick
+                result[tick["ticker"]] = tick
 
             with open(TICKERS, "w") as f:
                 json.dump(result, f)
 
             updated = now
-            cm.set_config('tickers.updated', updated)
+            cm.set_config("tickers.updated", updated)
         else:
             with open(TICKERS, "r") as f:
                 result = json.load(f)
 
         return result
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     tp = DefaultStockTickerProvider()
-    t = tp.get_ticker('AAPL')
+    t = tp.get_ticker("AAPL")
     print(t)
