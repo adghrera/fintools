@@ -1,2 +1,4 @@
 /venv/
 traderbot/.my_pgpass
+*.pyc
+.pyc
