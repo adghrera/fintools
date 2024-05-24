@@ -41,4 +41,3 @@ python manage.py shell
 
 python manage.py createsuperuser
 
-admin/admin123

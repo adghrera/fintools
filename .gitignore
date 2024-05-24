@@ -2,3 +2,4 @@
 traderbot/.my_pgpass
 *.pyc
 .pyc
+docs/notes.txt
