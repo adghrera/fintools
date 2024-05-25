@@ -125,6 +125,31 @@ def import_eod_data(globpath="U:\\data\\stooq\\zip\\data\\daily\\**\\*.txt"):
     print("done")
 
 
+# daily update
+# curl 'https://stooq.com/db/d/?d=20240515+20240516+20240517+20240518+20240519+20240520+20240521+20240522+20240523+20240524+20240525&t=d' \
+#   -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+#   -H 'Accept-Language: en-US,en;q=0.9' \
+#   -H 'Connection: keep-alive' \
+#   -H 'Cookie: uid=usbdi78ap7v6dtsuws1y19ems1; PHPSESSID=u4kv2es0r0e2qdeko2vu9s9jd2; cookie_user=%7E00006enrka010fb; cookie_uu=240525000; __gads=ID=4d4e4c4c11458634:T=1714198471:RT=1716614978:S=ALNI_MZ2FZH0kZdvdrhl5wvNhJZKHU0tkA; __eoi=ID=77f0b3a021ceafd7:T=1714198471:RT=1716614978:S=AA-AfjZxCTRamPuGShZJvyBrn_BR' \
+#   -H 'If-Modified-Since: Sat, 25 May 2024 07:32:43 GMT' \
+#   -H 'Referer: https://stooq.com/db/' \
+#   -H 'Sec-Fetch-Dest: document' \
+#   -H 'Sec-Fetch-Mode: navigate' \
+#   -H 'Sec-Fetch-Site: same-origin' \
+#   -H 'Sec-Fetch-User: ?1' \
+#   -H 'Upgrade-Insecure-Requests: 1' \
+#   -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36' \
+#   -H 'sec-ch-ua: "Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"' \
+#   -H 'sec-ch-ua-mobile: ?0' \
+#   -H 'sec-ch-ua-platform: "Windows"'
+
+
+# curl 'https://stooq.com/db/d/?d=20240515+20240516+20240517+20240518+20240519+20240520+20240521+20240522+20240523+20240524+20240525&t=d' \
+#   -H 'Cookie: uid=usbdi78ap7v6dtsuws1y19ems1; PHPSESSID=u4kv2es0r0e2qdeko2vu9s9jd2; cookie_user=%7E00006enrka010fb; cookie_uu=240525000; __gads=ID=4d4e4c4c11458634:T=1714198471:RT=1716614978:S=ALNI_MZ2FZH0kZdvdrhl5wvNhJZKHU0tkA; __eoi=ID=77f0b3a021ceafd7:T=1714198471:RT=1716614978:S=AA-AfjZxCTRamPuGShZJvyBrn_BR'
+
+# curl 'https://stooq.com/db/d/?d=20240515+20240516+20240517+20240518+20240519+20240520+20240521+20240522+20240523+20240524+20240525&t=d' \
+#   -H 'Cookie: uid=usbdi78ap7v6dtsuws1y19ems1; PHPSESSID=u4kv2es0r0e2qdeko2vu9s9jd2; cookie_user=%7E00006enrka010fb; cookie_uu=240525000; __gads=ID=4d4e4c4c11458634:T=1714198471:RT=1716614978:S=ALNI_MZ2FZH0kZdvdrhl5wvNhJZKHU0tkA; __eoi=ID=77f0b3a021ceafd7:T=1714198471:RT=1716614978:S=AA-AfjZxCTRamPuGShZJvyBrn_BR'
+
 if __name__ == "__main__":
     # import_all_tickers()
     # glob_files("U:\\data\\stooq\\zip\\data\\**\\*.txt")

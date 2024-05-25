@@ -1,3 +1,60 @@
+- get latest stock data
+
+StockPicker
+pick -> stocks[]
+stages -> 
+[{
+    index: 1,
+    type: 'StockPicker',
+    date: '',
+    inputs: {
+        stocks: [],
+    },
+    output: {
+        stocks: []
+    }
+    details: {},
+    started: '',
+    ended: '',
+    timeTaken: 10000
+}, ...]
+
+StockFilter
+pick -> stocks[]
+
+
+- cache for a day
+
+- decision_log
+- stockpicks
+- activity
+- account 
+   - id, number, balance, pending, available, txncount, maxbalance, daily_amt_limit, daily_txn_limit
+- orders
+- filled
+- txns
+
+selection - 10 - 50
+dataframe, 
+log regression, 
+neural net, 
+moving average
+use agent to filter stock
+use llama to process news articles
+spy goes down by over 3% in 10 days and stock also goes down -> buy
+
+
+
+
+
+
+180 days
+- top 50 buys
+- 100 average stocks
+- top 50 sells
+
+
+
 - Financial data
 
 https://site.financialmodelingprep.com/developer/docs/pricing
