@@ -3,4 +3,8 @@ djangorest - https://www.django-rest-framework.org/
 requests - https://pypi.org/project/requests/
 edgartools - https://pypi.org/project/edgartools/
 
+pandas, numpy, matplotlib, statsmodels, pandas_datareader, datetime, yfinance, scikit-learn, PyPortfolioOpt
+
+pip install pandas numpy matplotlib statsmodels pandas_datareader pandas-ta datetime yfinance scikit-learn PyPortfolioOpt
+
 

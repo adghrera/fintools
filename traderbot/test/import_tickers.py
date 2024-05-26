@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+import functools
 import glob
 import math
 import test_setup
@@ -40,30 +41,12 @@ def read_eod_file(filepath):
                 firstline = False
                 print("importing ", filepath)
             else:
-                cols = line.strip().split(",")
-                # print(cols)
-                eod = Eod()
-                tick = to_ticker(cols[0])
-                symbol = tick
-                eod.id = tick + "-" + cols[2]
-                if not ticker:
-                    ticker = Ticker.objects.filter(id=tick)
-                    if not ticker.exists():
-                        print("NO_TICKER: " + tick)
-                        break
-                op = Decimal(cols[4])
-                hi = Decimal(cols[5])
-                if op > 10000000 or hi > 10000000:
-                    print("BAD_DATA: " + line)
-                    return None
-                eod.ticker = Ticker(id=tick)
-                eod.day = datetime.strptime(cols[2], "%Y%m%d").date()
-                eod.open = Decimal(cols[4])
-                eod.close = Decimal(cols[7])
-                eod.high = Decimal(cols[5])
-                eod.low = Decimal(cols[6])
-                eod.volume = Decimal(cols[8])
-                eod.volume = math.floor(eod.volume)
+                eod, status = process_eod_row(line, ticker)
+                if status == "invalid":
+                    break
+                if not eod:
+                    continue
+                ticker = eod.ticker
                 data.append(eod)
                 # print(eod)
     if not ticker or not ticker.exists():
@@ -76,6 +59,39 @@ def read_eod_file(filepath):
         return None
 
     return data
+
+
+def process_eod_row(line, ticker=None):
+    cols = line.strip().split(",")
+    # print(cols)
+    eod = Eod()
+    tick = to_ticker(cols[0])
+    symbol = tick
+    eod.id = tick + "-" + cols[2]
+    if not ticker:
+        ticker = get_ticker(tick)
+        # ticker = Ticker.objects.filter(id=tick)
+        # if not ticker.exists():
+        if not ticker:
+            print("NO_TICKER: " + tick)
+            return None, "invalid"
+        else:
+            print("FOUND_TICKER: " + tick)
+
+    op = Decimal(cols[4])
+    hi = Decimal(cols[5])
+    if op > 10000000 or hi > 10000000:
+        print("BAD_DATA: " + line)
+        return None, None
+    eod.ticker = Ticker(id=tick)
+    eod.day = datetime.strptime(cols[2], "%Y%m%d").date()
+    eod.open = Decimal(cols[4])
+    eod.close = Decimal(cols[7])
+    eod.high = Decimal(cols[5])
+    eod.low = Decimal(cols[6])
+    eod.volume = Decimal(cols[8])
+    eod.volume = math.floor(eod.volume)
+    return eod, None
 
 
 def import_eod_file(filepath):
@@ -125,6 +141,111 @@ def import_eod_data(globpath="U:\\data\\stooq\\zip\\data\\daily\\**\\*.txt"):
     print("done")
 
 
+def cmp_eod(a, b):
+    if a.ticker.id < b.ticker.id:
+        return -1
+    elif a.ticker.id > b.ticker.id:
+        return 1
+    elif a.day < b.day:
+        return -1
+    elif a.day > b.day:
+        return 1
+    else:
+        return 0
+
+
+def import_delta(filepath):
+    # read file
+    mismatches = []
+    missing_stocks = []
+
+    rows = []
+    idx = 0
+    errors = []
+    with open(filepath, "r") as f:
+        for line in f:
+            idx += 1
+            if idx == 1:
+                continue
+            eod, status = process_eod_row(line, ticker=None)
+            if not eod:
+                continue
+            rows.append(eod)
+
+    print(rows)
+
+    # order by symbol, date
+    rows.sort(key=functools.cmp_to_key(cmp_eod))
+
+    # load latest N for symbol
+    ticker = None
+    existing = None
+    skipTicker = False
+
+    new_rows = []
+
+    for idx in range(len(rows)):
+        eod = rows[idx]
+        if ticker != eod.ticker.id:
+            existing = Eod.objects.filter(
+                ticker__id=eod.ticker.id, day__gte=eod.day
+            ).all()
+            ticker = eod.ticker.id
+            skipTicker = False
+            print("Getting ", eod.ticker.id, eod.day, existing)
+        elif skipTicker:
+            print("SKIPPING_EOD", ticker)
+            continue
+
+        existingRecord = False
+        for item in existing:
+            if item.day == eod.day and abs(item.close - eod.close) > max(
+                Decimal(0.02) * eod.close, Decimal(0.5)
+            ):
+                mismatches.append(
+                    {"item": item, "existing.close": item.close, "eod.close": eod.close}
+                )
+                skipTicker = True
+                break
+            elif item.day == eod.day:
+                existingRecord = True
+
+        if skipTicker:
+            continue
+
+        if existingRecord:
+            continue
+
+        new_rows.append(eod)
+
+    with transaction.atomic():
+        Eod.objects.bulk_create(new_rows, ignore_conflicts=True)
+
+    print("ADDED_ROWS", len(new_rows))
+    print(new_rows)
+
+    print("MISMATCHES", len(mismatches))
+    print(mismatches)
+
+    # compare with current prices
+    # if not match, throw error
+    # else, add new data
+
+
+# all_tickers = None
+all_tickers = None
+
+
+def get_ticker(ticker):
+    global all_tickers
+    if not all_tickers:
+        tickers = Ticker.objects.all()
+        all_tickers = {}
+        for tick in tickers:
+            all_tickers[tick.id] = tick
+    return all_tickers.get(ticker)
+
+
 # daily update
 # curl 'https://stooq.com/db/d/?d=20240515+20240516+20240517+20240518+20240519+20240520+20240521+20240522+20240523+20240524+20240525&t=d' \
 #   -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
@@ -154,4 +275,7 @@ if __name__ == "__main__":
     # import_all_tickers()
     # glob_files("U:\\data\\stooq\\zip\\data\\**\\*.txt")
     # read_eod_file("U:\\data\\stooq\\zip\\data\\daily\\us\\nysemkt stocks\\gsat.us.txt")
-    import_eod_data()
+
+    # import_eod_data()
+    import_delta(filepath="U:\\data\\stooq\\delta\\data_d20240525.txt")
+    # import_delta(filepath="U:\\data\\stooq\\delta\\test.txt")
