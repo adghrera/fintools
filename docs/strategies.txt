@@ -1,2 +1,19 @@
 Aroon oscillator
 
+https://github.com/Luchkata/Algorithmic_Trading_Machine_Learning/blob/main/Algorithmic_Trading_Machine_Learning_Quant_Strategies.ipynb
+
+https://github.com/quantopian/research_public/blob/master/notebooks/lectures/Instability_of_Estimates/notebook.ipynb
+
+https://github.com/quantopian/zipline/blob/master/docs/source/beginner-tutorial.rst
+
+https://github.com/peerchemist/finta
+
+
+Simple 1
+========
+if SPY is down > 2% over 3 days and stock is down > 2%:
+ buy stock
+else if stock is up > 4%
+ sell stock
+else if SPY is up > 1% and stock is down > 5%
+ sell stock

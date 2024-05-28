@@ -1,4 +1,10 @@
 - get latest stock data
+- generate signals - buy, sell
+- define strategy
+- backtest, amount, start date, strategy
+
+
+
 
 StockPicker
 pick -> stocks[]
