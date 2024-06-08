@@ -32,10 +32,10 @@ class AppCache(object):
 
     def loadFromDisk(self, oldest=0):
         if os.path.exists(CACHE_DIR + self.cachename + ".pickle"):
+            self._cache = pickle.load(
+                open(CACHE_DIR + self.cachename + ".pickle", "rb")
+            )
             if self._cache["created"] > time.time() - oldest:
-                self._cache = pickle.load(
-                    open(CACHE_DIR + self.cachename + ".pickle", "rb")
-                )
                 self._cache["loaded"] = int(time.time())
                 return True
             else:

@@ -15,7 +15,7 @@ import yfinance as yf
 import pandas_ta
 import warnings
 from stockutils.tickers.stocktickers import StockTickerProvider
-from stockutils.appconsts import DAY_SECS
+from stockutils.appconsts import CACHE_DURATION, DAY_SECS
 from stockutils.cacheutils import AppCache
 
 warnings.filterwarnings("ignore")
@@ -39,7 +39,7 @@ class SPY500Tickers(StockTickerProvider):
 
         # pickle data
         cached = AppCache("SPY500Tickers")
-        cached.loadFromDisk(DAY_SECS)
+        cached.loadFromDisk(CACHE_DURATION)
         if cached.loadedFromDisk():
             logging.info("Loaded SPY500 tickers from file")
             print("loading...")
@@ -56,6 +56,8 @@ class SPY500Tickers(StockTickerProvider):
         self.cache = {}
         for sym in symbols_list:
             self.cache[sym] = {"ticker": sym, "title": sym}
+
+        self.cache["symbols"] = symbols_list
 
         cached.set("tickers", self.cache)
         cached.saveToDisk()
