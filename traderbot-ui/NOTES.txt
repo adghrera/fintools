@@ -1,0 +1,11 @@
+svelte
+https://svelte.dev/
+
+
+sveltekit
+https://kit.svelte.dev/
+
+
+shadcn
+https://www.shadcn-svelte.com/docs/installation/sveltekit
+
