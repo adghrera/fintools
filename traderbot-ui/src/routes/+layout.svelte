@@ -18,6 +18,8 @@
 
 <slot></slot>
 
+<slot></slot>
+
 <style>
 	.app {
 		display: flex;
