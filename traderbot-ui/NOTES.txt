@@ -9,3 +9,6 @@ https://kit.svelte.dev/
 shadcn
 https://www.shadcn-svelte.com/docs/installation/sveltekit
 
+
+npx shadcn-svelte@latest add button
+
